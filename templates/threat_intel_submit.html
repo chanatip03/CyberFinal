@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Submission Portal — CASE-2026-0047</title>
+  <meta name="robots" content="noindex, nofollow"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/static/style.css"/>
+  <link rel="stylesheet" href="/static/leaflet.css"/>
+</head>
+<body>
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a class="nav-brand" href="/">
+      <div class="nav-brand-icon">CSA</div>
+      <div>
+        <div class="nav-brand-text">KMUTT-CSA</div>
+        <div class="nav-brand-sub">CASE SUBMISSION PORTAL</div>
+      </div>
+    </a>
+    <div class="nav-breadcrumb">
+      <span style="color:#94a3b8">internal</span>
+      <span class="nav-sep">/</span>
+      <span class="nav-cur">submit</span>
+    </div>
+    <div class="nav-status-bar">
+      <div class="nav-stat"><span class="dot dot-r"></span>RESTRICTED</div>
+    </div>
+  </div>
+</nav>
+
+<div class="case-banner">
+  <div class="case-banner-inner">
+    <span class="case-badge">SUBMISSION</span>
+    <div class="case-title">Case Closure — <span>Submit Investigation Finding</span></div>
+    <div class="case-meta-chips">
+      <span class="chip chip-gray">CASE-2026-0047</span>
+      <span class="chip chip-orange">STAGE 2 FINAL</span>
+    </div>
+  </div>
+</div>
+
+<main class="container">
+
+  <!-- Success/profile section — hidden until correct flag -->
+  <section class="card" id="profile-section" style="display:none">
+    <div class="card-header">
+      <span class="card-header-icon">👤</span>
+      <span class="card-header-title">Decrypted Attacker Profile</span>
+      <span class="badge badge-green">ATTRIBUTED</span>
+    </div>
+    <div class="card-body">
+      <pre class="profile-json" id="profile-json"></pre>
+    </div>
+  </section>
+
+  <!-- Map — hidden until correct flag -->
+  <section class="card" id="map-section" style="display:none">
+    <div class="card-header">
+      <span class="card-header-icon">🗺</span>
+      <span class="card-header-title">Last Known Location</span>
+      <span class="badge badge-green">GEOLOCATED</span>
+    </div>
+    <div class="card-body">
+      <div id="map" class="map-container"></div>
+      <p class="map-caption">📍 Bucharest, Romania &middot; 44.4268°N, 26.1025°E &middot; 2026-05-16 21:10 UTC</p>
+    </div>
+  </section>
+
+  <!-- Flag submission -->
+  <section class="card">
+    <div class="card-header">
+      <span class="card-header-icon">⚑</span>
+      <span class="card-header-title">Submit Final Finding</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:.85rem;color:var(--text-d);margin-bottom:1.2rem;">
+        Enter the final flag recovered from the decrypted attribution profile to close this case.
+      </p>
+      <div id="flag-result" style="display:none" class="alert" role="alert"></div>
+      <form id="flag-form" onsubmit="submitFlag(event)">
+        <label class="form-label" for="flag-input">Investigation Flag</label>
+        <div class="input-row">
+          <input id="flag-input" type="text" class="form-input"
+            placeholder="Enter the flag from the decrypted file..."
+            autocomplete="off" spellcheck="false" required/>
+          <button id="submit-flag-btn" type="submit" class="btn btn-orange">⚑ Submit</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  KMUTT-CSA Submission Portal &mdash; CASE-2026-0047 &mdash; Restricted
+</footer>
+
+<script src="/static/leaflet.js"></script>
+<script>
+  async function submitFlag(e){
+    e.preventDefault();
+    const flag=document.getElementById('flag-input').value.trim();
+    const res=await fetch('/submit-flag',{
+      method:'POST',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body:'flag='+encodeURIComponent(flag)
+    });
+    const data=await res.json();
+    const el=document.getElementById('flag-result');
+    el.style.display='flex';
+    el.className='alert '+(data.success?'alert-ok':'alert-err');
+    el.innerHTML=(data.success?'<span>✓</span>':'<span>✗</span>')+' '+data.message;
+    if(data.success) revealAttacker();
+  }
+
+  function revealAttacker(){
+    const p={
+      attacker_handle:"ghostfox",
+      email:"ghostfox@protonmail.com",
+      country:"Romania",
+      city:"Bucharest",
+      last_known_lat:44.4268,
+      last_known_lon:26.1025,
+      final_flag:"flag{ghost_logs_led_to_threat_attribution}"
+    };
+    document.getElementById('profile-json').textContent=JSON.stringify(p,null,2);
+    document.getElementById('profile-section').style.display='block';
+    document.getElementById('map-section').style.display='block';
+    document.getElementById('profile-section').scrollIntoView({behavior:'smooth'});
+    setTimeout(()=>{
+      const map=L.map('map').setView([44.4268,26.1025],12);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map);
+      L.marker([44.4268,26.1025]).addTo(map)
+        .bindPopup('<b>ghostfox</b><br>Bucharest, Romania<br>2026-05-16 21:10 UTC')
+        .openPopup();
+    },300);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>GhostFox Supplies Co. — Quality Tech Accessories</title>
+  <meta name="description" content="GhostFox Supplies Co. — Your trusted source for quality tech accessories and electronics."/>
+  <meta name="author" content="ghostfox-dev"/>
+  <meta name="keywords" content="tech accessories, electronics, cables, adapters"/>
+  <!-- Internal: data archive accessible to verified personnel. Credential matches the key used during the last integrity audit. -->
+  <meta name="x-internal-ref" content="For authorised access to case documents, consult the site crawler policy. The decryption credential is the same secret that confirmed the evidence was untampered."/>
+  <meta name="x-build-version" content="1.4.2-stable"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--orange:#f97316;--orange-d:#ea580c;--navy:#1a2035;--bg:#f4f6f8;--white:#fff;--text:#1e293b;--text-d:#64748b;--border:#e2e8f0}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+    /* STORE NAV */
+    .store-nav{background:var(--navy);padding:.9rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+    .store-logo{display:flex;align-items:center;gap:.7rem;text-decoration:none}
+    .store-logo-icon{width:36px;height:36px;background:var(--orange);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+    .store-logo-text{color:#fff;font-weight:700;font-size:1.1rem}
+    .store-logo-sub{color:#94a3b8;font-size:.7rem;display:block}
+    .store-nav-links{display:flex;gap:1.5rem;list-style:none}
+    .store-nav-links a{color:#cbd5e1;text-decoration:none;font-size:.88rem;transition:color .2s}
+    .store-nav-links a:hover{color:var(--orange)}
+    .store-nav-right{display:flex;align-items:center;gap:1rem}
+    .store-search{display:flex;align-items:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:6px;overflow:hidden}
+    .store-search input{background:transparent;border:none;padding:.45rem .8rem;color:#fff;font-size:.82rem;width:200px;outline:none}
+    .store-search input::placeholder{color:#64748b}
+    .store-search button{background:var(--orange);border:none;padding:.45rem .8rem;color:#fff;cursor:pointer;font-size:.8rem}
+    .cart-btn{background:var(--orange);color:#fff;border:none;padding:.5rem 1rem;border-radius:6px;cursor:pointer;font-size:.82rem;font-weight:600}
+
+    /* HERO BANNER */
+    .hero{background:linear-gradient(135deg,var(--navy) 0%,#2d3a55 100%);color:#fff;padding:3.5rem 2rem;text-align:center}
+    .hero-tag{display:inline-block;background:var(--orange);color:#fff;font-size:.7rem;font-weight:700;padding:.25rem .7rem;border-radius:100px;letter-spacing:.08em;margin-bottom:1rem;text-transform:uppercase}
+    .hero h1{font-size:2.2rem;font-weight:800;margin-bottom:.7rem;letter-spacing:-.02em}
+    .hero p{color:#94a3b8;max-width:520px;margin:0 auto 1.5rem;font-size:.95rem}
+    .hero-btns{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap}
+    .btn-hero-pri{background:var(--orange);color:#fff;padding:.7rem 1.5rem;border-radius:8px;border:none;font-weight:600;cursor:pointer;font-size:.88rem}
+    .btn-hero-sec{background:transparent;color:#fff;padding:.7rem 1.5rem;border-radius:8px;border:1px solid rgba(255,255,255,.25);font-weight:600;cursor:pointer;font-size:.88rem}
+
+    /* CATEGORIES */
+    .section{max-width:1100px;margin:0 auto;padding:2.5rem 1.5rem}
+    .section-title{font-size:1.3rem;font-weight:700;color:var(--text);margin-bottom:.3rem}
+    .section-sub{color:var(--text-d);font-size:.85rem;margin-bottom:1.5rem}
+    .cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:1rem}
+    .cat-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:1.2rem;text-align:center;cursor:pointer;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+    .cat-card:hover{border-color:var(--orange);box-shadow:0 4px 12px rgba(249,115,22,.15);transform:translateY(-2px)}
+    .cat-icon{font-size:1.8rem;margin-bottom:.5rem}
+    .cat-name{font-size:.78rem;font-weight:600;color:var(--text)}
+
+    /* PRODUCTS */
+    .product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.2rem}
+    .product-card{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06);transition:all .2s}
+    .product-card:hover{box-shadow:0 6px 20px rgba(0,0,0,.1);transform:translateY(-2px)}
+    .product-img{background:linear-gradient(135deg,#f1f5f9,#e2e8f0);height:160px;display:flex;align-items:center;justify-content:center;font-size:3rem;border-bottom:1px solid var(--border)}
+    .product-body{padding:1rem}
+    .product-name{font-size:.88rem;font-weight:600;color:var(--text);margin-bottom:.25rem}
+    .product-desc{font-size:.75rem;color:var(--text-d);margin-bottom:.75rem;line-height:1.5}
+    .product-footer{display:flex;align-items:center;justify-content:space-between}
+    .product-price{font-size:1rem;font-weight:700;color:var(--orange-d)}
+    .add-btn{background:var(--orange);color:#fff;border:none;padding:.4rem .9rem;border-radius:6px;font-size:.75rem;font-weight:600;cursor:pointer}
+
+    /* CONTACT SECTION */
+    .contact-section{background:var(--white);border-top:1px solid var(--border);padding:3rem 2rem}
+    .contact-inner{max-width:600px;margin:0 auto;text-align:center}
+    .contact-inner h2{font-size:1.3rem;font-weight:700;margin-bottom:.5rem}
+    .contact-inner p{color:var(--text-d);font-size:.88rem;margin-bottom:1.5rem}
+    .contact-form{display:flex;flex-direction:column;gap:.75rem;text-align:left}
+    .contact-form input,.contact-form textarea{width:100%;padding:.7rem .9rem;border:1px solid var(--border);border-radius:8px;font-family:'Inter',sans-serif;font-size:.85rem;color:var(--text);outline:none;transition:border-color .2s}
+    .contact-form input:focus,.contact-form textarea:focus{border-color:var(--orange)}
+    .contact-form input::placeholder,.contact-form textarea::placeholder{color:#94a3b8}
+    .contact-form textarea{height:100px;resize:vertical}
+    .contact-submit{background:var(--orange);color:#fff;border:none;padding:.7rem 1.5rem;border-radius:8px;font-weight:600;cursor:pointer;font-size:.88rem;width:100%}
+
+    /* FOOTER */
+    .store-footer{background:var(--navy);color:#94a3b8;text-align:center;padding:1.5rem;font-size:.75rem;border-top:3px solid var(--orange)}
+    .store-footer a{color:var(--orange);text-decoration:none}
+  </style>
+</head>
+<body>
+
+<!-- Hidden hint in page source — visible only if you view source or inspect element -->
+<!-- Dev note: Authorised personnel can access the document vault. Check the crawler policy file first, then look for the archive. You already have what you need to open it. -->
+
+<nav class="store-nav">
+  <a class="store-logo" href="#">
+    <div class="store-logo-icon">🦊</div>
+    <div>
+      <span class="store-logo-text">GhostFox Supplies</span>
+      <span class="store-logo-sub">Quality Tech Accessories</span>
+    </div>
+  </a>
+  <ul class="store-nav-links">
+    <li><a href="#">Home</a></li>
+    <li><a href="#">Products</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <div class="store-nav-right">
+    <div class="store-search">
+      <!-- Placeholder contains a subtle hint in plain English -->
+      <input type="text" placeholder="Search products... or try checking our site policy for restricted sections"/>
+      <button>🔍</button>
+    </div>
+    <button class="cart-btn">🛒 Cart (0)</button>
+  </div>
+</nav>
+
+<!-- Hidden field — visible in page source -->
+<input type="hidden" name="internal-note" value="Document vault available to verified personnel. Credential is the same as the one that passed the integrity check on the evidence logs."/>
+
+<div class="hero">
+  <div class="hero-tag">✦ New Arrivals This Week</div>
+  <h1>Your Trusted Tech Partner</h1>
+  <p>Premium cables, adapters, and accessories for professionals who demand reliability and performance.</p>
+  <div class="hero-btns">
+    <button class="btn-hero-pri">Shop Now</button>
+    <button class="btn-hero-sec">View Catalogue</button>
+  </div>
+</div>
+
+<section class="section">
+  <div class="section-title">Browse Categories</div>
+  <div class="section-sub">Find exactly what you need</div>
+  <div class="cat-grid">
+    <div class="cat-card"><div class="cat-icon">🔌</div><div class="cat-name">Cables</div></div>
+    <div class="cat-card"><div class="cat-icon">📡</div><div class="cat-name">Adapters</div></div>
+    <div class="cat-card"><div class="cat-icon">🖥️</div><div class="cat-name">Monitors</div></div>
+    <div class="cat-card"><div class="cat-icon">⌨️</div><div class="cat-name">Keyboards</div></div>
+    <div class="cat-card"><div class="cat-icon">🖱️</div><div class="cat-name">Peripherals</div></div>
+    <div class="cat-card"><div class="cat-icon">🔋</div><div class="cat-name">Power Banks</div></div>
+    <div class="cat-card"><div class="cat-icon">🎧</div><div class="cat-name">Audio</div></div>
+    <!-- Internal archive: see site crawler policy for restricted endpoint -->
+    <div class="cat-card" style="opacity:.4;cursor:default"><div class="cat-icon">📁</div><div class="cat-name">Archive</div></div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0">
+  <div class="section-title">Featured Products</div>
+  <div class="section-sub">Best sellers this month</div>
+  <div class="product-grid">
+    <div class="product-card">
+      <div class="product-img">🔌</div>
+      <div class="product-body">
+        <div class="product-name">USB-C Pro Cable 2m</div>
+        <div class="product-desc">High-speed 240W charging and 40Gbps data transfer. Braided nylon.</div>
+        <div class="product-footer"><span class="product-price">฿490</span><button class="add-btn">Add to Cart</button></div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img">📡</div>
+      <div class="product-body">
+        <div class="product-name">HDMI 2.1 Adapter</div>
+        <div class="product-desc">4K@144Hz / 8K@60Hz support. Gold-plated connectors for stable signal.</div>
+        <div class="product-footer"><span class="product-price">฿350</span><button class="add-btn">Add to Cart</button></div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img">🔋</div>
+      <div class="product-body">
+        <div class="product-name">PowerVault 20,000mAh</div>
+        <div class="product-desc">Fast charge compatible. Dual USB-A + USB-C output. Compact design.</div>
+        <div class="product-footer"><span class="product-price">฿1,290</span><button class="add-btn">Add to Cart</button></div>
+      </div>
+    </div>
+    <div class="product-card">
+      <div class="product-img">🎧</div>
+      <div class="product-body">
+        <div class="product-name">Studio Monitor Headset</div>
+        <div class="product-desc">50mm drivers. Noise isolation. 3.5mm + USB-C dual connectivity.</div>
+        <div class="product-footer"><span class="product-price">฿2,100</span><button class="add-btn">Add to Cart</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="contact-section">
+  <div class="contact-inner">
+    <h2>Get In Touch</h2>
+    <p>Have a question about a product or a special order? Send us a message and we'll get back within 24 hours.</p>
+    <div class="contact-form">
+      <input type="text" placeholder="Your name"/>
+      <!-- Hint hidden in placeholder — tells player what to do in plain English without revealing method -->
+      <input type="email" placeholder="Your email — For document retrieval requests, check our published access policy first"/>
+      <textarea placeholder="Your message... If you are looking for a classified case file, you will find it listed in the page that search engines are told not to index. The key you already have."></textarea>
+      <button class="contact-submit">Send Message</button>
+    </div>
+  </div>
+</div>
+
+<footer class="store-footer">
+  <p>© 2026 GhostFox Supplies Co. &mdash; All rights reserved &mdash; <a href="/robots.txt">Site Policy</a></p>
+</footer>
+
+</body>
+</html>

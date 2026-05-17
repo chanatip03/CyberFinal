@@ -1,0 +1,70 @@
+# ============================================================
+# KMUTT-SOC | SIEM Centralized Log Export v2.1
+# Source Host  : webserver-01.kmutt.ac.th
+# Source IP    : 10.0.0.15
+# Export Range : 2026-05-16 20:00:00 UTC - 22:00:00 UTC
+# Exported At  : 2026-05-17 04:30:00 UTC
+# Exported By  : soc-analyst-02@kmutt.ac.th
+# Total Events : 59
+# Format: [TIMESTAMP] [SEV] [MODULE] SRC_IP "METHOD PATH PROTO" STATUS BYTES sess=ID [NOTE]
+# ============================================================
+
+[2026-05-16 20:00:47 UTC] INFO   ACCESS   10.0.1.45      "GET  /index.html HTTP/1.1"                               200   8432  sess=a1b2c3
+[2026-05-16 20:01:33 UTC] INFO   ACCESS   203.0.113.5    "GET  /login HTTP/1.1"                                    200   4218  sess=-
+[2026-05-16 20:02:05 UTC] INFO   AUTH     203.0.113.5    "POST /api/v1/auth/login HTTP/1.1"                        200    512  sess=d8f3a1 user=jsmith
+[2026-05-16 20:03:14 UTC] INFO   ACCESS   203.0.113.5    "GET  /user/orders HTTP/1.1"                              200  12481  sess=d8f3a1 user=jsmith
+[2026-05-16 20:04:22 UTC] INFO   ACCESS   10.0.1.45      "GET  /docs/q1-report.pdf HTTP/1.1"                       200 204800  sess=a1b2c3
+[2026-05-16 20:06:11 UTC] INFO   ACCESS   172.16.4.12    "GET  /admin/dashboard HTTP/1.1"                          200   9871  sess=f9e8d7 user=sysadmin
+[2026-05-16 20:07:03 UTC] INFO   ACCESS   172.16.4.12    "GET  /admin/system/status HTTP/1.1"                      200   3214  sess=f9e8d7 user=sysadmin
+[2026-05-16 20:08:44 UTC] INFO   ACCESS   203.0.113.5    "POST /api/v1/orders/new HTTP/1.1"                        201    643  sess=d8f3a1 user=jsmith oid=ORD-9941
+[2026-05-16 20:09:52 UTC] INFO   ACCESS   10.0.1.45      "GET  /products/catalog HTTP/1.1"                         200  14821  sess=a1b2c3
+[2026-05-16 20:11:03 UTC] INFO   ACCESS   198.51.100.23  "GET  /robots.txt HTTP/1.1"                               200    183  sess=-
+[2026-05-16 20:11:04 UTC] WARN   ACCESS   198.51.100.23  "GET  /wp-admin/setup-config.php HTTP/1.1"                404    512  sess=-  [BOT_PROBE]
+[2026-05-16 20:11:05 UTC] WARN   ACCESS   198.51.100.23  "GET  /phpmyadmin/index.php HTTP/1.1"                     404    512  sess=-  [BOT_PROBE]
+[2026-05-16 20:11:06 UTC] WARN   ACCESS   198.51.100.23  "GET  /.env HTTP/1.1"                                     404    512  sess=-  [BOT_PROBE]
+[2026-05-16 20:11:07 UTC] WARN   ACCESS   198.51.100.23  "GET  /admin/ HTTP/1.1"                                   403    218  sess=-  [BOT_PROBE]
+[2026-05-16 20:11:08 UTC] WARN   ACCESS   198.51.100.23  "GET  /config.php HTTP/1.1"                               404    512  sess=-  [BOT_PROBE]
+[2026-05-16 20:11:09 UTC] WARN   ACCESS   198.51.100.23  "GET  /backup.zip HTTP/1.1"                               404    512  sess=-  [BOT_PROBE]
+[2026-05-16 20:12:41 UTC] INFO   ACCESS   172.16.4.12    "POST /admin/maintenance/clear-cache HTTP/1.1"            200    128  sess=f9e8d7 user=sysadmin
+[2026-05-16 20:14:05 UTC] INFO   ACCESS   10.0.1.45      "GET  /news/announcements HTTP/1.1"                       200   6210  sess=a1b2c3
+[2026-05-16 20:16:22 UTC] INFO   ACCESS   203.0.113.5    "GET  /user/invoices HTTP/1.1"                            200   8840  sess=d8f3a1 user=jsmith
+[2026-05-16 20:18:17 UTC] INFO   ACCESS   172.16.4.12    "GET  /admin/users HTTP/1.1"                              200  18432  sess=f9e8d7 user=sysadmin [SCHEDULED_AUDIT]
+[2026-05-16 20:21:03 UTC] INFO   AUTH     10.0.1.45      "POST /api/v1/auth/login HTTP/1.1"                        200    512  sess=b4c5d6 user=sarah.m
+[2026-05-16 20:22:14 UTC] INFO   ACCESS   10.0.1.45      "GET  /hr/policies HTTP/1.1"                              200   5102  sess=b4c5d6 user=sarah.m
+[2026-05-16 20:24:39 UTC] INFO   ACCESS   172.16.4.12    "POST /admin/backup/run HTTP/1.1"                         202   1024  sess=f9e8d7 user=sysadmin
+[2026-05-16 20:26:11 UTC] INFO   ACCESS   203.0.113.5    "GET  /products/detail?id=2091 HTTP/1.1"                  200   7102  sess=d8f3a1 user=jsmith
+[2026-05-16 20:29:55 UTC] INFO   ACCESS   10.0.1.45      "POST /api/v1/feedback HTTP/1.1"                          201    290  sess=b4c5d6 user=sarah.m
+[2026-05-16 20:33:07 UTC] INFO   ACCESS   172.16.4.12    "GET  /admin/logs/application.log HTTP/1.1"               200  51200  sess=f9e8d7 user=sysadmin
+[2026-05-16 20:36:42 UTC] INFO   ACCESS   203.0.113.5    "POST /api/v1/orders/new HTTP/1.1"                        201    688  sess=d8f3a1 user=jsmith oid=ORD-9942
+[2026-05-16 20:39:18 UTC] WARN   AUTH     203.0.113.5    "POST /api/v1/auth/login HTTP/1.1"                        401     94  sess=-  user=jsmith reason=session_expired attempt=1
+[2026-05-16 20:39:44 UTC] INFO   AUTH     203.0.113.5    "POST /api/v1/auth/login HTTP/1.1"                        200    512  sess=e1f2a3 user=jsmith
+[2026-05-16 20:41:22 UTC] INFO   ACCESS   10.0.1.45      "GET  /docs/employee-handbook.pdf HTTP/1.1"               200 409600  sess=b4c5d6 user=sarah.m
+[2026-05-16 20:43:55 UTC] INFO   ACCESS   172.16.4.12    "GET  /admin/network/topology HTTP/1.1"                   200   4812  sess=f9e8d7 user=sysadmin
+[2026-05-16 20:46:30 UTC] INFO   ACCESS   203.0.113.5    "GET  /user/profile HTTP/1.1"                             200   4120  sess=e1f2a3 user=jsmith
+[2026-05-16 20:49:02 UTC] INFO   ACCESS   10.0.1.45      "GET  /index.html HTTP/1.1"                               200   8432  sess=b4c5d6 user=sarah.m
+[2026-05-16 20:52:33 UTC] INFO   ACCESS   172.16.4.12    "POST /admin/users/update HTTP/1.1"                       200    890  sess=f9e8d7 user=sysadmin uid=42 action=update_role
+[2026-05-16 20:55:14 UTC] INFO   ACCESS   203.0.113.5    "GET  /products/catalog HTTP/1.1"                         200  14821  sess=e1f2a3 user=jsmith
+[2026-05-16 20:57:48 UTC] INFO   ACCESS   10.0.1.45      "GET  /hr/leave-request HTTP/1.1"                         200   3290  sess=b4c5d6 user=sarah.m
+[2026-05-16 21:00:14 UTC] WARN   AUTH     185.77.23.91   "POST /api/v1/auth/login HTTP/1.1"                        401     94  sess=-  user=admin reason=invalid_password attempt=1
+[2026-05-16 21:00:28 UTC] WARN   AUTH     185.77.23.91   "POST /api/v1/auth/login HTTP/1.1"                        401     94  sess=-  user=admin reason=invalid_password attempt=2
+[2026-05-16 21:00:47 UTC] WARN   AUTH     185.77.23.91   "POST /api/v1/auth/login HTTP/1.1"                        401     94  sess=-  user=admin reason=invalid_password attempt=3
+[2026-05-16 21:01:03 UTC] CRIT   AUTH     185.77.23.91   "POST /api/v1/auth/login HTTP/1.1"                        200    512  sess=9fx2k1 user=admin attempt=4 [BRUTE_FORCE_SUCCESS]
+[2026-05-16 21:01:44 UTC] INFO   ACCESS   185.77.23.91   "GET  /admin/dashboard HTTP/1.1"                          200   9871  sess=9fx2k1 user=admin
+[2026-05-16 21:02:18 UTC] INFO   ACCESS   10.0.1.45      "GET  /products/catalog HTTP/1.1"                         200  14821  sess=b4c5d6 user=sarah.m
+[2026-05-16 21:02:55 UTC] WARN   ACCESS   185.77.23.91   "GET  /admin/users HTTP/1.1"                              200  18432  sess=9fx2k1 user=admin [SENSITIVE_ENDPOINT]
+[2026-05-16 21:03:42 UTC] WARN   ACCESS   185.77.23.91   "GET  /admin/audit-trail HTTP/1.1"                        200  33280  sess=9fx2k1 user=admin [RECON]
+[2026-05-16 21:05:01 UTC] CRIT   ACCESS   185.77.23.91   "GET  /finance/payroll.xlsx HTTP/1.1"                     200 524288  sess=9fx2k1 user=admin [SENSITIVE_FILE_ACCESS]
+[2026-05-16 21:07:33 UTC] CRIT   PRIVESC  185.77.23.91   "POST /api/v1/admin/token-refresh HTTP/1.1"               200    712  sess=9fx2k1 user=admin method=token_reuse new_role=superadmin [PRIVILEGE_ESCALATION]
+[2026-05-16 21:08:02 UTC] INFO   ACCESS   172.16.4.12    "GET  /admin/dashboard HTTP/1.1"                          200   9871  sess=f9e8d7 user=sysadmin
+[2026-05-16 21:09:00 UTC] CRIT   ACCESS   185.77.23.91   "GET  /admin/db/export?table=users&format=csv HTTP/1.1"   200 102400  sess=9fx2k1 user=admin [DATA_EXPORT]
+[2026-05-16 21:10:27 UTC] CRIT   EXFIL    185.77.23.91   "POST /api/v1/integrations/webhook HTTP/1.1"              200    201  sess=9fx2k1 dest=185.77.23.91:4444 bytes_out=638976 [EXFILTRATION_DETECTED]
+[2026-05-16 21:10:55 UTC] INFO   ACCESS   203.0.113.5    "GET  /products/detail?id=3300 HTTP/1.1"                  200   6812  sess=e1f2a3 user=jsmith
+[2026-05-16 21:12:44 UTC] INFO   AUTH     185.77.23.91   "DELETE /api/v1/auth/session/9fx2k1 HTTP/1.1"             200     42  sess=9fx2k1 user=admin [SESSION_REVOKED]
+[2026-05-16 21:14:22 UTC] INFO   ACCESS   10.0.1.45      "POST /api/v1/feedback HTTP/1.1"                          201    310  sess=b4c5d6 user=sarah.m
+[2026-05-16 21:17:30 UTC] INFO   ACCESS   172.16.4.12    "GET  /admin/audit-trail HTTP/1.1"                        200  35120  sess=f9e8d7 user=sysadmin
+[2026-05-16 21:22:05 UTC] INFO   ACCESS   203.0.113.5    "GET  /user/orders HTTP/1.1"                              200  12481  sess=e1f2a3 user=jsmith
+[2026-05-16 21:28:18 UTC] INFO   ACCESS   10.0.1.45      "GET  /docs/q2-report.pdf HTTP/1.1"                       200 204800  sess=b4c5d6 user=sarah.m
+[2026-05-16 21:35:40 UTC] INFO   ACCESS   172.16.4.12    "POST /admin/maintenance/clear-cache HTTP/1.1"            200    128  sess=f9e8d7 user=sysadmin
+[2026-05-16 21:44:12 UTC] INFO   ACCESS   203.0.113.5    "GET  /user/profile HTTP/1.1"                             200   4120  sess=e1f2a3 user=jsmith
+[2026-05-16 21:51:03 UTC] INFO   ACCESS   10.0.1.45      "GET  /index.html HTTP/1.1"                               200   8432  sess=b4c5d6 user=sarah.m
+[2026-05-16 22:00:00 UTC] INFO   SYSTEM   --             "Scheduled log rotation complete"                          ---     --  sess=-

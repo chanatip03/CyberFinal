@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>CASE-2026-0047 | Operation Ghost Logs — KMUTT-SOC</title>
+  <meta name="description" content="KMUTT Cybersecurity Agency — Incident Investigation CASE-2026-0047"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="/static/style.css"/>
+  <style>
+    /* BRIEFING MODAL */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(15,20,40,.65);backdrop-filter:blur(4px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:1rem}
+    .modal{background:#fff;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.25);max-width:560px;width:100%;overflow:hidden;animation:slideUp .35s ease}
+    @keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+    .modal-top{background:var(--navy);padding:1.2rem 1.5rem;display:flex;align-items:center;gap:.9rem}
+    .modal-top-icon{width:40px;height:40px;background:var(--orange);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+    .modal-top-title{color:#fff;font-weight:700;font-size:.95rem}
+    .modal-top-sub{color:#94a3b8;font-size:.72rem;margin-top:.1rem}
+    .modal-body{padding:1.5rem}
+    .modal-from{display:flex;align-items:center;gap:.6rem;padding:.6rem .9rem;background:#f8fafc;border:1px solid var(--border);border-radius:7px;margin-bottom:1.1rem}
+    .modal-from-label{font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--text-d);letter-spacing:.1em;text-transform:uppercase;min-width:40px}
+    .modal-from-val{font-size:.82rem;color:var(--text);font-weight:500}
+    .modal-msg{font-size:.9rem;color:var(--text-d);line-height:1.8;margin-bottom:1.2rem}
+    .modal-msg strong{color:var(--text)}
+    .modal-msg .hl{color:var(--orange-d);font-weight:600}
+    .modal-footer{display:flex;justify-content:flex-end;gap:.7rem;padding-top:.9rem;border-top:1px solid var(--border)}
+    .modal-ack{background:var(--orange);color:#fff;border:none;padding:.65rem 1.4rem;border-radius:7px;font-weight:600;font-size:.85rem;cursor:pointer;transition:all .2s}
+    .modal-ack:hover{background:var(--orange-d);transform:translateY(-1px)}
+    .modal-dismiss{background:transparent;color:var(--text-d);border:1px solid var(--border);padding:.65rem 1rem;border-radius:7px;font-size:.85rem;cursor:pointer}
+    .modal-dismiss:hover{border-color:var(--border-dark);color:var(--text)}
+    .modal-badge{display:inline-block;background:#fef2f2;color:#dc2626;border:1px solid #fca5a5;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;padding:.15rem .5rem;border-radius:3px;letter-spacing:.1em;margin-right:.4rem}
+  </style>
+</head>
+<body>
+
+<!-- BRIEFING MODAL -->
+<div class="modal-backdrop" id="briefing-modal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-top">
+      <div class="modal-top-icon">🚨</div>
+      <div>
+        <div class="modal-top-title" id="modal-title">Urgent Briefing — CASE-2026-0047</div>
+        <div class="modal-top-sub">KMUTT Cybersecurity Agency &mdash; Security Operations Centre</div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-from">
+        <span class="modal-from-label">From</span>
+        <span class="modal-from-val">Aj. Wanchai Siriporn &mdash; SOC Team Lead, KMUTT-CSA</span>
+      </div>
+      <div class="modal-from" style="margin-top:-.5rem">
+        <span class="modal-from-label">To</span>
+        <span class="modal-from-val">On-call Analyst &mdash; Incident Response Unit</span>
+      </div>
+      <p class="modal-msg" style="margin-top:1rem">
+        <span class="modal-badge">PRIORITY 1</span> We have a serious situation on our hands.
+      </p>
+      <p class="modal-msg">
+        Earlier today, our SIEM flagged some highly suspicious activity on the organisation's web server.
+        It looks like someone managed to break into the admin account and then went straight for the
+        <strong>financial database</strong>. A significant amount of data appears to have been
+        <span class="hl">sent out to an unknown external address</span> before the session was terminated.
+      </p>
+      <p class="modal-msg">
+        We've pulled a signed log export from the system covering the window when this happened.
+        Your job is to <strong>go through those logs carefully</strong>, figure out who was behind this,
+        and track them down. There's more than one IP showing unusual behaviour in there —
+        don't jump to conclusions.
+      </p>
+      <p class="modal-msg" style="margin-bottom:0">
+        The evidence files are ready for you below. Start there.
+        Good luck — we're counting on you to close this.
+      </p>
+      <div class="modal-footer">
+        <button class="modal-dismiss" onclick="closeModal()">Read Later</button>
+        <button class="modal-ack" id="modal-ack-btn" onclick="closeModal()">Understood — Begin Investigation</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a class="nav-brand" href="/">
+      <div class="nav-brand-icon">CSA</div>
+      <div>
+        <div class="nav-brand-text">KMUTT-CSA</div>
+        <div class="nav-brand-sub">SECURITY OPERATIONS CENTRE</div>
+      </div>
+    </a>
+    <div class="nav-breadcrumb">
+      <span>Investigations</span>
+      <span class="nav-sep">/</span>
+      <span>Active Cases</span>
+      <span class="nav-sep">/</span>
+      <span class="nav-cur">CASE-2026-0047</span>
+    </div>
+    <div class="nav-status-bar">
+      <div class="nav-stat"><span class="dot dot-g"></span>SIEM ONLINE</div>
+      <div class="nav-stat"><span class="dot dot-r"></span>INCIDENT ACTIVE</div>
+      <div class="nav-stat" id="live-clock" style="color:#e2e8f0"></div>
+    </div>
+  </div>
+</nav>
+
+<div class="case-banner">
+  <div class="case-banner-inner">
+    <span class="case-badge">CASE-2026-0047</span>
+    <div class="case-title">Operation Ghost Logs — <span>Audit Integrity & Threat Attribution</span></div>
+    <div class="case-meta-chips">
+      <span class="chip chip-red">CRITICAL</span>
+      <span class="chip chip-orange">DATA EXFILTRATION</span>
+      <span class="chip chip-blue">HMAC · AES-256-CBC</span>
+      <span class="chip chip-gray">ASSIGNED: SOC-02</span>
+    </div>
+  </div>
+</div>
+
+<main class="container">
+
+  <!-- INCIDENT REPORT -->
+  <section class="card">
+    <div class="card-header">
+      <span class="card-header-icon">📋</span>
+      <span class="card-header-title">Incident Report</span>
+      <span class="badge badge-red">P1 — CRITICAL</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:.9rem;color:var(--text-d);margin-bottom:1rem;line-height:1.75">
+        On <strong style="color:var(--text)">2026-05-16</strong>, the KMUTT Cybersecurity Agency received an emergency
+        request from an organization reporting anomalous SIEM alerts. Preliminary triage indicates a
+        <strong style="color:var(--red)">credential brute-force attack</strong> was conducted against the web server,
+        followed by unauthorized access to sensitive financial records and a
+        <strong style="color:var(--red)">large-scale data exfiltration event</strong> of approximately 638 KB
+        transmitted to an unknown external destination.
+      </p>
+      <p style="font-size:.9rem;color:var(--text-d);margin-bottom:1.4rem;line-height:1.75">
+        The organization has provided a signed SIEM log export covering a 2-hour window of activity.
+        Analysts are requested to examine the evidence, determine the integrity of the log,
+        identify the responsible threat actor, and initiate attribution procedures.
+      </p>
+
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-left">
+            <span class="tl-time">20:00–20:59</span>
+          </div>
+          <div style="display:flex;align-items:center;padding:0 .8rem;flex-shrink:0">
+            <div class="tl-dot tl-dot-ok"></div>
+          </div>
+          <div class="tl-content">
+            <h4>Normal Operations</h4>
+            <p>Regular web traffic from internal employees, external customers, and automated scanners. No anomalies detected.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left">
+            <span class="tl-time">21:00–21:01</span>
+          </div>
+          <div style="display:flex;align-items:center;padding:0 .8rem;flex-shrink:0">
+            <div class="tl-dot tl-dot-warn"></div>
+          </div>
+          <div class="tl-content">
+            <h4>Authentication Anomaly</h4>
+            <p>Multiple failed login attempts targeting <code>username=admin</code> from an unrecognised external IP. WARN threshold reached.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left">
+            <span class="tl-time">21:01–21:09</span>
+          </div>
+          <div style="display:flex;align-items:center;padding:0 .8rem;flex-shrink:0">
+            <div class="tl-dot tl-dot-crit"></div>
+          </div>
+          <div class="tl-content">
+            <h4>Unauthorised Access &amp; Data Theft</h4>
+            <p>Admin account compromised. Sensitive files accessed including <code>/finance/payroll.xlsx</code>. Privilege escalation detected via <code>token_reuse</code>.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-left">
+            <span class="tl-time">21:10</span>
+          </div>
+          <div style="display:flex;align-items:center;padding:0 .8rem;flex-shrink:0">
+            <div class="tl-dot tl-dot-crit"></div>
+          </div>
+          <div class="tl-content">
+            <h4>Exfiltration Event — CRITICAL</h4>
+            <p>SIEM flags outbound data transfer. <strong style="color:var(--red)">638,976 bytes</strong> transmitted to an external IP. Session destroyed immediately after transfer.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EVIDENCE FILES -->
+  <section class="card">
+    <div class="card-header">
+      <span class="card-header-icon">📎</span>
+      <span class="card-header-title">Evidence Files</span>
+      <span class="badge badge-orange">3 ATTACHMENTS</span>
+    </div>
+    <div class="card-body">
+      <p style="font-size:.85rem;color:var(--text-d);margin-bottom:1rem;">
+        The following files have been exported from the organisation's SIEM and are provided for forensic analysis.
+      </p>
+      <div class="file-grid">
+        <a id="dl-log" href="/download/audit.log" class="file-card" download>
+          <div class="file-icon">📄</div>
+          <div>
+            <div class="file-name">audit.log</div>
+            <div class="file-desc">SIEM export — 59 log events, 2-hour window (20:00–22:00 UTC on 2026-05-16), 5 unique source IPs</div>
+          </div>
+          <div class="file-dl">↓</div>
+        </a>
+        <a id="dl-sig" href="/download/audit.log.sig" class="file-card" download>
+          <div class="file-icon">🔏</div>
+          <div>
+            <div class="file-name">audit.log.sig</div>
+            <div class="file-desc">HMAC-SHA256 hex digest — cryptographic signature for log integrity verification</div>
+          </div>
+          <div class="file-dl">↓</div>
+        </a>
+        <a id="dl-wl" href="/download/wordlist.txt" class="file-card" download>
+          <div class="file-icon">📃</div>
+          <div>
+            <div class="file-name">wordlist.txt</div>
+            <div class="file-desc">Candidate secret keys — recovered from the organisation's internal credential vault</div>
+          </div>
+          <div class="file-dl">↓</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+
+</main>
+
+<footer class="footer">
+  KMUTT Cybersecurity Agency &mdash; CASE-2026-0047 &mdash; Operation Ghost Logs &mdash; Blue Team Challenge
+</footer>
+
+<script>
+  function tick(){
+    const now=new Date();
+    document.getElementById('live-clock').textContent=now.toISOString().replace('T',' ').slice(0,19)+' UTC';
+  }
+  tick();setInterval(tick,1000);
+
+  function closeModal(){
+    const m=document.getElementById('briefing-modal');
+    m.style.opacity='0';
+    m.style.transition='opacity .25s';
+    setTimeout(()=>m.style.display='none',260);
+  }
+  // Close on backdrop click
+  document.getElementById('briefing-modal').addEventListener('click',function(e){
+    if(e.target===this) closeModal();
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+# render.yaml — Render deployment configuration
+# Docs: https://render.com/docs/render-yaml-reference
+
+services:
+  - type: web
+    name: operation-ghost-logs
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: singapore
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: PYTHONUNBUFFERED
+        value: "1"
+    healthCheckPath: /

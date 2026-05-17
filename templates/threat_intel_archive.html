@@ -6,12 +6,15 @@
   <title>Internal Archive — Restricted Access</title>
   <meta name="description" content="Internal document archive. Authorised access only."/>
   <meta name="robots" content="noindex, nofollow"/>
-  <!-- This file is encrypted. The password is the same secret used to verify the audit log integrity. -->
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/static/style.css"/>
 </head>
 <body>
+
+<!-- Archive uses standard OpenSSL export format -->
+<!-- Password reused across evidence protection workflow -->
+
 <nav class="navbar">
   <div class="navbar-inner">
     <a class="nav-brand" href="/">
@@ -35,10 +38,9 @@
 <div class="case-banner">
   <div class="case-banner-inner">
     <span class="case-badge">ARCHIVE</span>
-    <div class="case-title">Case Document Vault — <span>Encrypted Attribution File</span></div>
+    <div class="case-title">Case Document Vault — <span>Recovered Evidence</span></div>
     <div class="case-meta-chips">
       <span class="chip chip-red">CLASSIFIED</span>
-      <span class="chip chip-orange">ENCRYPTED</span>
       <span class="chip chip-gray">CASE-2026-0047</span>
     </div>
   </div>
@@ -54,33 +56,33 @@
     </div>
     <div class="card-body">
       <p style="font-size:.85rem;color:var(--text-d);margin-bottom:1.2rem;">
-        This directory contains encrypted case documents recovered during the investigation.
-        Files are protected. You will need the correct credential to decrypt them.
-        The credential is the same one that was used to confirm the evidence had not been tampered with.
+        The following document was recovered from a restricted internal archive during the investigation.
+        Analysts believe it contains attribution information related to the incident.
+        Access to the original contents may require credentials or additional processing.
       </p>
 
       <!-- File entry -->
       <div style="background:#f8fafc;border:1px solid var(--border);border-left:3px solid var(--orange);border-radius:8px;padding:1rem 1.2rem;margin-bottom:1rem">
         <div style="display:flex;align-items:center;gap:1rem">
-          <span style="font-size:1.5rem">🔐</span>
+          <span style="font-size:1.5rem">📄</span>
           <div style="flex:1">
             <div style="font-family:'JetBrains Mono',monospace;font-size:.88rem;font-weight:600;color:var(--orange-d)">attribution_profile.enc</div>
-            <div style="font-size:.75rem;color:var(--text-d);margin-top:.15rem">AES-256-CBC encrypted — OpenSSL salted format — modified 2026-05-16 21:10 UTC</div>
+            <div style="font-size:.75rem;color:var(--text-d);margin-top:.15rem">Recovered from internal archive — modified 2026-05-16 21:10 UTC</div>
           </div>
-          <span class="badge badge-red">ENCRYPTED</span>
+          <span class="badge badge-gray">1 FILE</span>
         </div>
       </div>
 
-      <!-- Encrypted blob -->
+      <!-- File contents -->
       <div style="background:#1e293b;border-radius:8px;padding:1.2rem;margin-top:.5rem">
-        <div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);margin-bottom:.7rem">
-          ⚠ CONTENT OF attribution_profile.enc (BASE64)
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:#64748b;margin-bottom:.7rem">
+          CONTENT OF attribution_profile.enc
         </div>
-        <pre id="enc-blob" style="font-family:'JetBrains Mono',monospace;font-size:.75rem;color:#fbbf24;word-break:break-all;white-space:pre-wrap;line-height:1.7">{{ encrypted_profile }}</pre>
+        <pre id="enc-blob" style="font-family:'JetBrains Mono',monospace;font-size:.75rem;color:#94a3b8;word-break:break-all;white-space:pre-wrap;line-height:1.7">{{ encrypted_profile }}</pre>
         <div style="display:flex;justify-content:flex-end;margin-top:.7rem">
           <button onclick="copyBlob()" id="copy-btn"
-            style="background:transparent;border:1px solid rgba(249,115,22,.4);color:var(--orange);font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.35rem .8rem;border-radius:5px;cursor:pointer">
-            ⎘ Copy File Contents
+            style="background:transparent;border:1px solid rgba(100,116,139,.3);color:#64748b;font-family:'JetBrains Mono',monospace;font-size:.7rem;padding:.35rem .8rem;border-radius:5px;cursor:pointer">
+            ⎘ Copy
           </button>
         </div>
       </div>
@@ -89,25 +91,23 @@
 
   <section class="card">
     <div class="card-header">
-      <span class="card-header-icon">💬</span>
-      <span class="card-header-title">Access Notes</span>
+      <span class="card-header-icon">🗒</span>
+      <span class="card-header-title">Case Notes</span>
     </div>
     <div class="card-body">
       <div style="display:flex;flex-direction:column;gap:.8rem">
-        <div style="display:flex;gap:.8rem;padding:.75rem 1rem;background:#fff7ed;border:1px solid #fed7aa;border-radius:7px;font-size:.82rem">
-          <span style="flex-shrink:0">🔑</span>
-          <span style="color:#7c2d12">
-            The file is locked with a symmetric cipher. To open it, you need a password.
-            That password is not stored here — you should already have recovered it during your earlier investigation of the evidence files.
-            It is the same word that proved the log was genuine.
+        <div style="display:flex;gap:.8rem;padding:.75rem 1rem;background:#f8fafc;border:1px solid var(--border);border-radius:7px;font-size:.82rem;color:var(--text-d)">
+          <span style="flex-shrink:0">📌</span>
+          <span>
+            This file was last written at <strong style="color:var(--text)">21:10 UTC on 2026-05-16</strong> —
+            coinciding with the final recorded activity from the suspect session before it was terminated.
           </span>
         </div>
-        <div style="display:flex;gap:.8rem;padding:.75rem 1rem;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:7px;font-size:.82rem">
-          <span style="flex-shrink:0">📋</span>
-          <span style="color:#14532d">
-            Once you have decrypted the file, read the contents carefully.
-            The final answer you are looking for is embedded inside the decrypted data.
-            When you have it, proceed to the submission endpoint.
+        <div style="display:flex;gap:.8rem;padding:.75rem 1rem;background:#f8fafc;border:1px solid var(--border);border-radius:7px;font-size:.82rem;color:var(--text-d)">
+          <span style="flex-shrink:0">📌</span>
+          <span>
+            The document originates from the same internal workflow that produced the signed evidence export.
+            SOC policy requires a consistent credential across each stage of the evidence chain.
           </span>
         </div>
       </div>
@@ -125,7 +125,7 @@
     navigator.clipboard.writeText(document.getElementById('enc-blob').textContent.trim()).then(()=>{
       const b=document.getElementById('copy-btn');
       b.textContent='✓ Copied';
-      setTimeout(()=>b.textContent='⎘ Copy File Contents',2000);
+      setTimeout(()=>b.textContent='⎘ Copy',2000);
     });
   }
 </script>

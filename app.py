@@ -23,18 +23,46 @@ def index():
     return render_template("index.html")
 
 
-# robots.txt — reveals hidden paths to curious analysts
+# /robots.txt — standard crawler policy file; first recon step for players
 @app.route("/robots.txt")
-def robots():
+def robots_txt():
     content = """User-agent: *
-Disallow: /admin/
-Disallow: /uploads/
-Disallow: /internal/logs/
-Disallow: /threat-intel/185.77.23.91/archive
-Disallow: /threat-intel/185.77.23.91/submit
+Disallow: /
 
-# Internal note: archive endpoint contains sensitive case documents.
+# Security policy: /.well-known/security.txt
+"""
+    return Response(content, mimetype="text/plain")
+
+
+# /.well-known/security.txt — RFC 9116 standard, security researchers always check this
+@app.route("/.well-known/security.txt")
+def security_txt():
+    content = """Contact: soc@kmutt-csa.internal
+Expires: 2027-01-01T00:00:00.000Z
+Preferred-Languages: th, en
+Canonical: https://cyberfinal-5myd.onrender.com/.well-known/security.txt
+
+# Internal audit note (do not publish externally):
+# Case document archive: /threat-intel/185.77.23.91/archive
+# Analyst submission endpoint: /threat-intel/185.77.23.91/submit
 # Access restricted to authorised SOC personnel only.
+"""
+    return Response(content, mimetype="text/plain")
+
+
+# /site-policy — backup alias linked from the store footer
+@app.route("/site-policy")
+def site_policy():
+    content = """GhostFox Supplies Co. — Site Policy
+=====================================
+This site complies with standard web crawler policies.
+For security disclosures, see: /.well-known/security.txt
+
+Restricted sections (internal use only):
+  /threat-intel/185.77.23.91/archive
+  /threat-intel/185.77.23.91/submit
+
+Unauthorised access to restricted sections is prohibited.
 """
     return Response(content, mimetype="text/plain")
 

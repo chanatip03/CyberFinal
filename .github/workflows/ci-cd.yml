@@ -1,0 +1,164 @@
+name: CI / Deploy — Operation Ghost Logs
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+  workflow_dispatch:   # ให้กด Run manually ได้จาก GitHub UI
+
+jobs:
+  # ─────────────────────────────────────────
+  # JOB 1 : CI — Lint + Unit Test + Docker Build
+  # ─────────────────────────────────────────
+  ci:
+    name: 🧪 Lint & Test & Docker Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      # ── Python setup ──────────────────────
+      - name: 🐍 Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: 📦 Install dependencies
+        run: pip install -r requirements.txt
+
+      # ── Lint with flake8 ──────────────────
+      - name: 🔍 Lint (flake8)
+        run: |
+          pip install flake8
+          # ข้าม line-too-long (E501) และ unused imports ในไฟล์เทมเพลต
+          flake8 app.py --max-line-length=120 --ignore=E302,W503
+        continue-on-error: false
+
+      # ── Basic smoke test (Flask test client) ──
+      - name: 🧪 Run smoke tests
+        run: |
+          python - <<'EOF'
+          import os, sys
+          # ป้องกัน FileNotFoundError สำหรับ challenge files ใน CI
+          os.makedirs("challenge", exist_ok=True)
+          if not os.path.exists("challenge/encrypted_profile.txt"):
+              open("challenge/encrypted_profile.txt", "w").write("MOCK_ENCRYPTED_PROFILE")
+
+          from app import app
+          app.config["TESTING"] = True
+          client = app.test_client()
+
+          # ─── Test routes ───────────────────────────
+          tests = [
+              ("/",                         200),
+              ("/robots.txt",               200),
+              ("/.well-known/security.txt", 200),
+              ("/site-policy",              200),
+              ("/threat-intel/0.0.0.0",     404),   # wrong IP → 404
+          ]
+
+          failed = 0
+          for path, expected in tests:
+              r = client.get(path)
+              status = "✅" if r.status_code == expected else "❌"
+              if r.status_code != expected:
+                  failed += 1
+              print(f"{status}  GET {path}  →  {r.status_code} (expected {expected})")
+
+          if failed:
+              print(f"\n{failed} test(s) failed!")
+              sys.exit(1)
+          else:
+              print("\nAll smoke tests passed 🎉")
+          EOF
+
+      # ── Docker build (validate Dockerfile) ──
+      - name: 🐳 Build Docker image
+        run: |
+          docker build \
+            --tag operation-ghost-logs:${{ github.sha }} \
+            --file Dockerfile \
+            .
+          echo "Docker image built successfully ✅"
+
+      # ── Quick container smoke test ──────────
+      - name: 🚀 Run container smoke test
+        run: |
+          docker run --rm -d \
+            --name ghost-logs-test \
+            -e PORT=5000 \
+            -p 5000:5000 \
+            operation-ghost-logs:${{ github.sha }}
+
+          echo "Waiting for container to start..."
+          sleep 5
+
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:5000/)
+          echo "Response from /  →  HTTP $HTTP_CODE"
+
+          docker stop ghost-logs-test
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "Container smoke test FAILED (expected 200, got $HTTP_CODE)"
+            exit 1
+          fi
+          echo "Container smoke test PASSED ✅"
+
+  # ─────────────────────────────────────────
+  # JOB 2 : Deploy to Render
+  # (รันเฉพาะเมื่อ push ไป main/master และ CI ผ่าน)
+  # ─────────────────────────────────────────
+  deploy:
+    name: 🚢 Deploy to Render
+    needs: ci
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🚀 Trigger Render Deploy Hook
+        run: |
+          echo "Triggering Render deploy..."
+          HTTP_CODE=$(curl -s -o /tmp/render_response.json -w "%{http_code}" \
+            --max-time 30 \
+            -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}")
+
+          cat /tmp/render_response.json || true
+          echo ""
+          echo "Render API responded with HTTP $HTTP_CODE"
+
+          if [ "$HTTP_CODE" -ge 200 ] && [ "$HTTP_CODE" -lt 300 ]; then
+            echo "Deploy triggered successfully ✅"
+          else
+            echo "Deploy trigger FAILED ❌ (HTTP $HTTP_CODE)"
+            exit 1
+          fi
+
+      - name: ⏳ Wait and verify deployment (health check)
+        run: |
+          echo "Waiting 60s for Render to spin up..."
+          sleep 60
+
+          DEPLOY_URL="${{ secrets.RENDER_APP_URL }}"
+          if [ -z "$DEPLOY_URL" ]; then
+            echo "RENDER_APP_URL secret not set — skipping health check"
+            exit 0
+          fi
+
+          for i in 1 2 3; do
+            HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 15 "$DEPLOY_URL/" || echo "000")
+            echo "Attempt $i → HTTP $HTTP_CODE"
+            if [ "$HTTP_CODE" = "200" ]; then
+              echo "Health check PASSED ✅  ($DEPLOY_URL)"
+              exit 0
+            fi
+            sleep 20
+          done
+
+          echo "Health check FAILED after 3 attempts ❌"
+          exit 1

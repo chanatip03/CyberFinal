@@ -100,7 +100,8 @@ def threat_intel_submit(ip):
 def submit_flag():
     flag = request.form.get("flag", "").strip()
     if flag == CORRECT_FLAG:
-        return jsonify({"success": True, "message": "Operation complete. Attacker attributed: ghostfox / Bucharest, Romania."})
+        msg = "Operation complete. Attacker attributed: ghostfox / Bucharest, Romania."
+        return jsonify({"success": True, "message": msg})
     return jsonify({"success": False, "message": "Incorrect. Keep investigating."})
 
 
